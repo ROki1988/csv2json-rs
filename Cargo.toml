@@ -5,3 +5,9 @@ authors = ["ROki1988 <roki.swindler@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+csv = "1.1.0"
+serde_json = "1.0.39"
+serde = "1.0.93"
+futures = "0.1.27"
+tokio = "0.1.20"
+itertools = "0.8.0"

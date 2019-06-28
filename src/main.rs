@@ -1,3 +1,28 @@
+use core::iter::Iterator;
+use std::{env, io};
+use std::collections::HashMap;
+use std::io::Write;
+use std::path::Path;
+
+use csv::ReaderBuilder;
+
 fn main() {
-    println!("Hello, world!");
+    let args: Vec<String> = env::args().collect();
+    let path = Path::new(&args[1]);
+    let mut rdr = ReaderBuilder::new()
+        .from_path(path)
+        .unwrap();
+
+    let h = rdr.headers().unwrap().clone();
+
+    let rs = rdr.records().flatten();
+
+    let stdout = io::stdout();
+    let mut locked = stdout.lock();
+    rs.for_each(|record| {
+        let out: HashMap<&str, &str> = h.iter().zip(record.iter()).collect();
+        locked
+            .write(serde_json::to_string(&out).unwrap().as_bytes())
+            .unwrap();
+    });
 }
