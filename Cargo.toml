@@ -1,0 +1,7 @@
+[package]
+name = "csv2json-rs"
+version = "0.1.0"
+authors = ["ROki1988 <roki.swindler@gmail.com>"]
+edition = "2018"
+
+[dependencies]
