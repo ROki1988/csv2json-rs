@@ -21,8 +21,10 @@ fn main() {
     let mut locked = stdout.lock();
     rs.for_each(|record| {
         let out: HashMap<&str, &str> = h.iter().zip(record.iter()).collect();
+        let mut s = serde_json::to_string(&out).unwrap();
+        s.push('\n');
         locked
-            .write(serde_json::to_string(&out).unwrap().as_bytes())
+            .write(s.as_bytes())
             .unwrap();
     });
 }
