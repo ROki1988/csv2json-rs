@@ -3,8 +3,7 @@ use std::{env, io};
 use std::collections::HashMap;
 use std::io::Write;
 use std::path::Path;
-
-use csv::ReaderBuilder;
+use csv::{ReaderBuilder, StringRecord};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -19,12 +18,17 @@ fn main() {
 
     let stdout = io::stdout();
     let mut locked = stdout.lock();
-    rs.for_each(|record| {
-        let out: HashMap<&str, &str> = h.iter().zip(record.iter()).collect();
+    let ss= rs.map(|record: StringRecord| {
+        let vs = record.iter().map(|v| serde_json::from_str(v)).flatten();
+        let out: HashMap<&str, serde_json::Value> = h.iter().zip(vs).collect();
         let mut s = serde_json::to_string(&out).unwrap();
         s.push('\n');
+        s
+    });
+
+    ss.for_each(|s| {
         locked
             .write(s.as_bytes())
             .unwrap();
-    });
+    })
 }
